@@ -1,0 +1,11 @@
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Local database
+*.db
+*.sqlite
+speedycell.db
+
+# Streamlit secrets (sensível)
+.streamlit/secrets.toml
