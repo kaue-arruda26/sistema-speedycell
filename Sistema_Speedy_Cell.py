@@ -508,6 +508,14 @@ def buscar_cep(cep):
 # 2. SISTEMA DE DESIGN (CSS CUSTOMIZADO - SPEEDY CELL)
 # =========================================================================
 st.markdown("""
+<script>
+    try {
+        if (window.parent && window.parent.document) {
+            window.parent.document.title = "Speedy Cell ERP";
+        }
+        document.title = "Speedy Cell ERP";
+    } catch(e) {}
+</script>
 <style>
     /* Carrega fonte Outfit do Google Fonts */
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
