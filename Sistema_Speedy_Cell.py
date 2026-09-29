@@ -520,16 +520,32 @@ if "tema_sistema" not in st.session_state:
 def injetar_estilos_tema():
     is_dark = (st.session_state.get("tema_sistema", "dark") == "dark")
     
-    bg_app = "#060D18" if is_dark else "#F8FAFC"
-    bg_sidebar = "#040910" if is_dark else "#F1F5F9"
-    text_color = "#F8FAFC" if is_dark else "#0F172A"
-    subtext_color = "#94A3B8" if is_dark else "#64748B"
-    border_color = "#1E2E48" if is_dark else "#E2E8F0"
-    card_bg = "#0B1626" if is_dark else "#FFFFFF"
-    card_border = "#1E314B" if is_dark else "#E2E8F0"
-    card_shadow = "0 8px 24px rgba(0, 0, 0, 0.45)" if is_dark else "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05)"
-    input_bg = "#0A1220" if is_dark else "#FFFFFF"
-    input_border = "#1E314B" if is_dark else "#CBD5E1"
+    if is_dark:
+        bg_app = "#0B0F17"
+        bg_sidebar = "#080C14"
+        card_bg = "#111827"
+        card_border = "#1E293B"
+        text_primary = "#F8FAFC"
+        text_secondary = "#94A3B8"
+        text_muted = "#64748B"
+        input_bg = "#0B0F17"
+        input_border = "#1E293B"
+        btn_sec_bg = "rgba(255, 255, 255, 0.04)"
+        btn_sec_border = "#1E293B"
+        btn_sec_color = "#E2E8F0"
+    else:
+        bg_app = "#F8FAFC"
+        bg_sidebar = "#FFFFFF"
+        card_bg = "#FFFFFF"
+        card_border = "#E2E8F0"
+        text_primary = "#0F172A"
+        text_secondary = "#475569"
+        text_muted = "#94A3B8"
+        input_bg = "#FFFFFF"
+        input_border = "#CBD5E1"
+        btn_sec_bg = "#F1F5F9"
+        btn_sec_border = "#E2E8F0"
+        btn_sec_color = "#334155"
     
     st.markdown(f"""
     <script>
@@ -541,49 +557,121 @@ def injetar_estilos_tema():
         }} catch(e) {{}}
     </script>
     <style>
-        /* Carrega fonte Outfit do Google Fonts */
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
-        /* Estilos Globais */
-        html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {{
-            font-family: 'Outfit', sans-serif !important;
+        /* Tipografia e Base */
+        html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], .stApp {{
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
         }}
 
         [data-testid="stAppViewContainer"] {{
             background-color: {bg_app} !important;
-            color: {text_color} !important;
-            {'background-image: radial-gradient(circle at 50% 0%, #0a1b33 0%, #060D18 75%) !important;' if is_dark else ''}
+            color: {text_primary} !important;
         }}
 
         [data-testid="stSidebar"] {{
             background-color: {bg_sidebar} !important;
-            border-right: 1px solid {border_color} !important;
+            border-right: 1px solid {card_border} !important;
         }}
 
-        /* Títulos e Headers */
-        h1, h2, h3, h4, h5, h6 {{
-            font-family: 'Outfit', sans-serif !important;
+        /* Hierarquia de Títulos (Harmônica e Proporcional) */
+        h1 {{
+            font-size: 24px !important;
             font-weight: 700 !important;
-            color: {text_color} !important;
+            color: {text_primary} !important;
+            letter-spacing: -0.02em !important;
+            margin-top: 0 !important;
+            margin-bottom: 6px !important;
+        }}
+        h2 {{
+            font-size: 18px !important;
+            font-weight: 600 !important;
+            color: {text_primary} !important;
+            letter-spacing: -0.01em !important;
+            margin-top: 14px !important;
+            margin-bottom: 6px !important;
+        }}
+        h3, h4, h5, h6 {{
+            font-size: 15px !important;
+            font-weight: 600 !important;
+            color: {text_primary} !important;
         }}
 
-        p, span, label, [data-testid="stWidgetLabel"] p {{
-            color: {text_color} !important;
+        /* Rótulos e Textos */
+        p, span {{
+            color: {text_primary};
         }}
-
+        label, [data-testid="stWidgetLabel"] p {{
+            color: {text_secondary} !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            margin-bottom: 4px !important;
+        }}
         .stCaption, [data-testid="stCaptionContainer"] p {{
-            color: {subtext_color} !important;
+            color: {text_muted} !important;
+            font-size: 12px !important;
+        }}
+
+        /* Caixas de Entrada (Inputs, Selects, Textareas) Elegantes */
+        .stTextInput input, .stNumberInput input, .stTextArea textarea, .stSelectbox select {{
+            color: {text_primary} !important;
+            background-color: {input_bg} !important;
+            font-size: 14px !important;
+            border-radius: 8px !important;
+        }}
+        div[data-baseweb="base-input"], div[data-baseweb="input"] {{
+            background-color: {input_bg} !important;
+            border: 1px solid {input_border} !important;
+            border-radius: 8px !important;
+            transition: all 0.2s ease-in-out !important;
+        }}
+        div[data-baseweb="base-input"]:focus-within, div[data-baseweb="input"]:focus-within {{
+            border-color: #00AEEF !important;
+            box-shadow: 0 0 0 2px rgba(0, 174, 239, 0.2) !important;
+        }}
+        div[data-baseweb="select"] > div {{
+            background-color: {input_bg} !important;
+            border: 1px solid {input_border} !important;
+            border-radius: 8px !important;
+            color: {text_primary} !important;
+        }}
+
+        /* Abas (Tabs) Modernas */
+        button[data-baseweb="tab"] {{
+            background-color: transparent !important;
+            border: none !important;
+            padding: 8px 16px !important;
+        }}
+        button[data-baseweb="tab"] p, button[data-baseweb="tab"] span {{
+            color: {text_secondary} !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+        }}
+        button[data-baseweb="tab"]:hover p, button[data-baseweb="tab"]:hover span {{
+            color: {text_primary} !important;
+        }}
+        button[data-baseweb="tab"][aria-selected="true"] p, button[data-baseweb="tab"][aria-selected="true"] span {{
+            color: #00AEEF !important;
+            font-weight: 700 !important;
+        }}
+        div[data-baseweb="tab-highlight"] {{
+            background-color: #00AEEF !important;
+            height: 2px !important;
+            border-radius: 2px !important;
+        }}
+        div[data-baseweb="tab-border"] {{
+            background-color: {card_border} !important;
         }}
 
         /* Cartão de Métrica Customizado */
         .metric-card {{
             background: {card_bg};
-            border-radius: 16px;
+            border-radius: 12px;
             border: 1px solid {card_border};
-            box-shadow: {card_shadow};
-            padding: 24px;
-            transition: all 0.25s ease-in-out;
-            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            padding: 18px 20px;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 16px;
             position: relative;
             overflow: hidden;
         }}
@@ -593,120 +681,137 @@ def injetar_estilos_tema():
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
+            height: 3px;
             background: linear-gradient(90deg, #00AEEF, #0077C8);
             opacity: 0;
-            transition: opacity 0.25s ease-in-out;
+            transition: opacity 0.2s ease-in-out;
         }}
         .metric-card:hover {{
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px -8px rgba(0, 174, 239, 0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0, 174, 239, 0.2);
             border-color: #00AEEF;
         }}
         .metric-card:hover::before {{
             opacity: 1;
         }}
         .metric-title {{
-            font-size: 13px;
-            color: {subtext_color};
+            font-size: 12px;
+            color: {text_secondary};
             text-transform: uppercase;
             font-weight: 600;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.04em;
         }}
         .metric-value {{
-            font-size: 32px;
-            color: {text_color};
-            font-weight: 800;
-            margin-top: 8px;
+            font-size: 24px;
+            color: {text_primary};
+            font-weight: 700;
+            margin-top: 6px;
         }}
         
         /* Cores de Métricas */
-        .val-primary {{ color: #00AEEF; font-weight: 800; }}
+        .val-primary {{ color: #00AEEF; font-weight: 700; }}
         .val-success {{ color: #10B981; }}
         .val-warning {{ color: #F59E0B; }}
         .val-danger {{ color: #EF4444; }}
 
-        /* Botões Globais do Sistema */
-        button[kind="primary"], .stButton > button, div[data-testid="stFormSubmitButton"] > button {{
+        /* Botões Primários (Formulários / Ações Principais) */
+        button[kind="primary"], div[data-testid="stFormSubmitButton"] > button {{
             background: linear-gradient(135deg, #00AEEF 0%, #0077C8 100%) !important;
             color: #FFFFFF !important;
             border: none !important;
-            border-radius: 10px !important;
+            border-radius: 8px !important;
             font-weight: 600 !important;
-            box-shadow: 0 4px 14px rgba(0, 174, 239, 0.35) !important;
+            font-size: 14px !important;
+            padding: 8px 16px !important;
+            box-shadow: 0 2px 8px rgba(0, 174, 239, 0.25) !important;
             transition: all 0.2s ease-in-out !important;
         }}
-        button[kind="primary"]:hover, .stButton > button:hover, div[data-testid="stFormSubmitButton"] > button:hover {{
-            transform: translateY(-2px) !important;
-            box-shadow: 0 6px 20px rgba(0, 174, 239, 0.55) !important;
+        button[kind="primary"]:hover, div[data-testid="stFormSubmitButton"] > button:hover {{
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 14px rgba(0, 174, 239, 0.45) !important;
             background: linear-gradient(135deg, #00C2FF 0%, #0088E8 100%) !important;
         }}
 
-        /* Inputs e Controles */
-        .stTextInput input, .stNumberInput input, .stTextArea textarea, .stSelectbox select {{
-            color: {text_color} !important;
-            background-color: {input_bg} !important;
+        /* Botões Secundários / Barra Lateral (Discretos e Modernos) */
+        .stButton > button, button[kind="secondary"] {{
+            background: {btn_sec_bg} !important;
+            border: 1px solid {btn_sec_border} !important;
+            color: {btn_sec_color} !important;
+            border-radius: 8px !important;
+            font-weight: 500 !important;
+            font-size: 13px !important;
+            padding: 6px 14px !important;
+            box-shadow: none !important;
+            transition: all 0.2s ease-in-out !important;
         }}
-        div[data-baseweb="base-input"], div[data-baseweb="input"], div[data-baseweb="select"] > div {{
-            background-color: {input_bg} !important;
-            border: 1px solid {input_border} !important;
-            border-radius: 10px !important;
+        .stButton > button:hover, button[kind="secondary"]:hover {{
+            border-color: #00AEEF !important;
+            color: #00AEEF !important;
+            background: rgba(0, 174, 239, 0.08) !important;
+            transform: translateY(-1px) !important;
         }}
 
         /* Badges de Status do Estoque / O.S. */
         .badge {{
-            padding: 6px 14px;
+            padding: 4px 12px;
             border-radius: 9999px;
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 600;
             display: inline-block;
             text-align: center;
         }}
-        .badge-available {{ background-color: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }}
-        .badge-sold {{ background-color: rgba(0, 174, 239, 0.15); color: #00AEEF; border: 1px solid rgba(0, 174, 239, 0.35); }}
-        .badge-maintenance {{ background-color: rgba(245, 158, 11, 0.15); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); }}
-        .badge-ready {{ background-color: rgba(0, 194, 255, 0.2); color: #00AEEF; border: 1px solid rgba(0, 194, 255, 0.4); }}
-        .badge-delivered {{ background-color: rgba(100, 116, 139, 0.15); color: {subtext_color}; border: 1px solid rgba(100, 116, 139, 0.3); }}
+        .badge-available {{ background-color: rgba(16, 185, 129, 0.12); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.25); }}
+        .badge-sold {{ background-color: rgba(0, 174, 239, 0.12); color: #00AEEF; border: 1px solid rgba(0, 174, 239, 0.3); }}
+        .badge-maintenance {{ background-color: rgba(245, 158, 11, 0.12); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.25); }}
+        .badge-ready {{ background-color: rgba(0, 194, 255, 0.15); color: #00AEEF; border: 1px solid rgba(0, 194, 255, 0.35); }}
+        .badge-delivered {{ background-color: rgba(100, 116, 139, 0.12); color: {text_secondary}; border: 1px solid rgba(100, 116, 139, 0.25); }}
 
         /* Estilo do Menu Sidebar */
         .sidebar-header {{
             text-align: center;
-            padding: 15px 0;
-            border-bottom: 1px solid {border_color};
-            margin-bottom: 20px;
+            padding: 12px 0;
+            border-bottom: 1px solid {card_border};
+            margin-bottom: 16px;
         }}
         .sidebar-title {{
-            font-size: 22px;
-            font-weight: 800;
+            font-size: 19px !important;
+            font-weight: 800 !important;
             background: linear-gradient(135deg, #00AEEF 0%, #0077C8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin: 0;
+            margin: 0 !important;
             letter-spacing: -0.5px;
         }}
         .sidebar-subtitle {{
-            font-size: 12px;
-            color: {subtext_color};
-            font-weight: 500;
-            margin-top: 4px;
+            font-size: 12px !important;
+            color: {text_secondary} !important;
+            font-weight: 500 !important;
+            margin-top: 3px !important;
         }}
 
         /* Logo na barra lateral */
         [data-testid="stSidebar"] [data-testid="stImage"] img {{
-            border-radius: 14px !important;
-            box-shadow: 0 4px 14px rgba(0, 174, 239, 0.15) !important;
-            border: 1px solid rgba(0, 174, 239, 0.25) !important;
+            border-radius: 12px !important;
+            box-shadow: 0 2px 10px rgba(0, 174, 239, 0.15) !important;
+            border: 1px solid rgba(0, 174, 239, 0.2) !important;
             background-color: #FFFFFF !important;
         }}
 
         /* Separadores e Caixas Expansíveis */
         hr {{
-            border-color: {border_color} !important;
+            border-color: {card_border} !important;
+            margin: 16px 0 !important;
         }}
         [data-testid="stExpander"] {{
             background-color: {card_bg} !important;
             border: 1px solid {card_border} !important;
-            border-radius: 12px !important;
+            border-radius: 10px !important;
+        }}
+
+        /* Radio Buttons */
+        .stRadio label p, .stRadio div[role="radiogroup"] p {{
+            color: {text_primary} !important;
+            font-size: 14px !important;
         }}
     </style>
     """, unsafe_allow_html=True)
@@ -976,22 +1081,23 @@ with st.sidebar:
                     st.session_state.db_engine = None
                     st.rerun()
 
-    st.caption(f"Usuário: {st.session_state.user_name}")
+    st.caption(f"👤 **{st.session_state.user_name}**")
     
-    # Alternar Tema Claro / Escuro
-    tema_atual = st.session_state.get("tema_sistema", "dark")
-    label_tema = "☀️ Modo Claro" if tema_atual == "dark" else "🌙 Modo Escuro"
-    if st.button(label_tema, use_container_width=True, key="btn_toggle_tema"):
-        st.session_state.tema_sistema = "light" if tema_atual == "dark" else "dark"
-        st.rerun()
-        
-    # Botão para ocultar/mostrar valores financeiros
-    label_olho = "👁️ Mostrar Valores" if st.session_state.ocultar_valores else "🙈 Ocultar Valores"
-    if st.button(label_olho, use_container_width=True, key="btn_toggle_olho"):
-        st.session_state.ocultar_valores = not st.session_state.ocultar_valores
-        st.rerun()
-        
-    if st.button("Sair", use_container_width=True, key="btn_sair"):
+    col_sb1, col_sb2 = st.columns(2)
+    with col_sb1:
+        tema_atual = st.session_state.get("tema_sistema", "dark")
+        label_tema = "☀️ Claro" if tema_atual == "dark" else "🌙 Escuro"
+        if st.button(label_tema, use_container_width=True, key="btn_toggle_tema"):
+            st.session_state.tema_sistema = "light" if tema_atual == "dark" else "dark"
+            st.rerun()
+            
+    with col_sb2:
+        label_olho = "👁️ Exibir" if st.session_state.ocultar_valores else "🙈 Ocultar"
+        if st.button(label_olho, use_container_width=True, key="btn_toggle_olho"):
+            st.session_state.ocultar_valores = not st.session_state.ocultar_valores
+            st.rerun()
+            
+    if st.button("🚪 Sair", use_container_width=True, key="btn_sair"):
         st.session_state.logged_in = False
         st.session_state.user_role = ""
         st.session_state.user_name = ""
