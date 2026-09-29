@@ -73,13 +73,20 @@ def testar_conexao_postgres():
     """Tenta conectar ao PostgreSQL / Supabase utilizando st.secrets"""
     try:
         if "DB_HOST" not in st.secrets:
-            return False, "Credenciais de banco não configuradas no secrets.toml."
+            return False, ""
+        host = str(st.secrets.get("DB_HOST", "")).strip()
+        user = str(st.secrets.get("DB_USER", "")).strip()
+        password = str(st.secrets.get("DB_PASSWORD", "")).strip()
+        
+        if not host or not user or not password:
+            return False, ""
+            
         conn = psycopg2.connect(
-            host=st.secrets["DB_HOST"],
-            database=st.secrets["DB_NAME"],
-            user=st.secrets["DB_USER"],
-            password=st.secrets["DB_PASSWORD"],
-            port=st.secrets["DB_PORT"],
+            host=host,
+            database=st.secrets.get("DB_NAME", "postgres"),
+            user=user,
+            password=password,
+            port=st.secrets.get("DB_PORT", 5432),
             connect_timeout=3
         )
         conn.close()
@@ -884,13 +891,15 @@ with st.sidebar:
     st.write("---")
     # Indicador e Configuração do Banco de Dados
     if st.session_state.get("db_engine") == "postgres":
-        st.success("🟢 Conectado ao Supabase (Nuvem)")
+        st.success("🟢 Conectado à Nuvem (Supabase)")
     else:
-        st.warning("🟡 Banco de Dados Local (SQLite)")
-        if st.session_state.get("db_error_msg"):
+        st.info("💾 **Banco Local Ativo (SQLite)**")
+        # Mostra o status somente se o usuário realmente configurou credenciais que não conectaram
+        host_configurado = str(st.secrets.get("DB_HOST", "")).strip() if "DB_HOST" in st.secrets else ""
+        if host_configurado and st.session_state.get("db_error_msg"):
             with st.expander("ℹ️ Status da Conexão Nuvem"):
-                st.caption(f"Supabase offline/pausado: {st.session_state.db_error_msg[:120]}...")
-                if st.button("🔄 Reconectar Supabase", use_container_width=True):
+                st.caption(f"Supabase offline/aguardando: {st.session_state.db_error_msg[:120]}...")
+                if st.button("🔄 Tentar Reconectar", use_container_width=True):
                     st.session_state.db_engine = None
                     st.rerun()
 
