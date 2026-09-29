@@ -1422,28 +1422,32 @@ elif opcao == "📦 Produtos & Estoque":
         with aba_novo_prod:
             st.header("Cadastrar Novo Modelo no Catálogo")
             with st.form("form_novo_produto", clear_on_submit=True):
-                tipo_item = st.selectbox(
-                    "Tipo do Produto / Mercadoria:",
-                    ["💻 Notebook", "🖱️ Acessório (Mouse, Teclado, Carregador)", "🔌 Componente/Peça (SSD, Memória, Tela)", "📦 Outros"]
+                tipo_item = st.text_input(
+                    "Tipo do Produto / Categoria (Livre para digitar):",
+                    placeholder="Ex: Smartphone, Película, Capa, Fone, Carregador, Bateria, Cabo, etc."
                 )
-                marca = st.text_input("Marca (Ex: Dell, Logitech, Kingston, Razer):")
-                modelo = st.text_input("Modelo / Configuração / Descrição:")
+                marca = st.text_input("Marca (Ex: Apple, Samsung, Xiaomi, Motorola, JBL):", placeholder="Ex: Apple")
+                modelo = st.text_input("Modelo / Configuração / Descrição:", placeholder="Ex: iPhone 13 128GB, Capa Silicone, Película 3D...")
                 custo = st.number_input("Custo de Aquisição (R$):", min_value=0.0, step=10.0)
                 val_minimo = st.number_input("Valor Mínimo de Venda (R$):", min_value=0.0, step=10.0)
                 val_venda = st.number_input("Valor Comercial Sugerido (R$):", min_value=0.0, step=10.0)
                 quantidade = st.number_input("Quantidade Inicial de Entrada (Unidades Físicas):", min_value=0, step=1, value=1)
                 
-                if st.form_submit_button("Adicionar ao Catálogo e Gerar Lote"):
+                if st.form_submit_button("Adicionar ao Catálogo e Gerar Lote", type="primary"):
                     if marca and modelo:
                         try:
-                            modelo_com_tipo = f"[{tipo_item.split(' ')[1]}] {modelo}"
+                            tipo_clean = tipo_item.strip()
+                            if tipo_clean:
+                                modelo_com_tipo = f"[{tipo_clean}] {modelo.strip()}"
+                            else:
+                                modelo_com_tipo = modelo.strip()
                             
                             conn = abrir_conexao()
                             cursor = conn.cursor()
                             cursor.execute("""
                                 INSERT INTO Produtos (Marca, Modelo, CustoProduto, ValorMinimo, ValorVenda)
                                 VALUES (%s, %s, %s, %s, %s) RETURNING IdProduto
-                            """, (marca, modelo_com_tipo, custo, val_minimo, val_venda))
+                            """, (marca.strip(), modelo_com_tipo, custo, val_minimo, val_venda))
                             id_prod = cursor.fetchone()[0]
                             
                             # Inserindo unidades físicas iniciais
@@ -1456,7 +1460,7 @@ elif opcao == "📦 Produtos & Estoque":
                                 
                             conn.commit()
                             conn.close()
-                            st.success(f"Produto '{marca} - {modelo_com_tipo}' cadastrado e {quantidade} unidades adicionadas ao estoque!")
+                            st.success(f"Produto '{marca.strip()} - {modelo_com_tipo}' cadastrado e {quantidade} unidades adicionadas ao estoque!")
                         except Exception as e:
                             st.error(f"Erro ao salvar produto: {e}")
                     else:
