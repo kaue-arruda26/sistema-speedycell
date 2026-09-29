@@ -512,147 +512,206 @@ def buscar_cep(cep):
     return None
 
 # =========================================================================
-# 2. SISTEMA DE DESIGN (CSS CUSTOMIZADO - SPEEDY CELL)
+# 2. SISTEMA DE DESIGN & TEMAS (DARK / LIGHT MODE - SPEEDY CELL)
 # =========================================================================
-st.markdown("""
-<script>
-    try {
-        if (window.parent && window.parent.document) {
-            window.parent.document.title = "Speedy Cell ERP";
-        }
-        document.title = "Speedy Cell ERP";
-    } catch(e) {}
-</script>
-<style>
-    /* Carrega fonte Outfit do Google Fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+if "tema_sistema" not in st.session_state:
+    st.session_state.tema_sistema = "dark"
 
-    /* Estilos Globais */
-    html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
-        font-family: 'Outfit', sans-serif;
-    }
-
-    /* Títulos e Headers */
-    h1, h2, h3 {
-        font-family: 'Outfit', sans-serif;
-        font-weight: 700;
-        color: #0A223B;
-    }
-
-    /* Cartão de Métrica Customizado */
-    .metric-card {
-        background: #FFFFFF;
-        border-radius: 16px;
-        border: 1px solid #E2E8F0;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-        padding: 24px;
-        transition: all 0.25s ease-in-out;
-        margin-bottom: 20px;
-        position: relative;
-        overflow: hidden;
-    }
-    .metric-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, #00AEEF, #0077C8);
-        opacity: 0;
-        transition: opacity 0.25s ease-in-out;
-    }
-    .metric-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 24px -8px rgba(0, 174, 239, 0.25);
-        border-color: #00AEEF;
-    }
-    .metric-card:hover::before {
-        opacity: 1;
-    }
-    .metric-title {
-        font-size: 13px;
-        color: #64748B;
-        text-transform: uppercase;
-        font-weight: 600;
-        letter-spacing: 0.05em;
-    }
-    .metric-value {
-        font-size: 32px;
-        color: #0A223B;
-        font-weight: 800;
-        margin-top: 8px;
-    }
+def injetar_estilos_tema():
+    is_dark = (st.session_state.get("tema_sistema", "dark") == "dark")
     
-    /* Cores de Métricas */
-    .val-primary { color: #00AEEF; font-weight: 800; }
-    .val-success { color: #10B981; }
-    .val-warning { color: #F59E0B; }
-    .val-danger { color: #EF4444; }
+    bg_app = "#060D18" if is_dark else "#F8FAFC"
+    bg_sidebar = "#040910" if is_dark else "#F1F5F9"
+    text_color = "#F8FAFC" if is_dark else "#0F172A"
+    subtext_color = "#94A3B8" if is_dark else "#64748B"
+    border_color = "#1E2E48" if is_dark else "#E2E8F0"
+    card_bg = "#0B1626" if is_dark else "#FFFFFF"
+    card_border = "#1E314B" if is_dark else "#E2E8F0"
+    card_shadow = "0 8px 24px rgba(0, 0, 0, 0.45)" if is_dark else "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05)"
+    input_bg = "#0A1220" if is_dark else "#FFFFFF"
+    input_border = "#1E314B" if is_dark else "#CBD5E1"
+    
+    st.markdown(f"""
+    <script>
+        try {{
+            if (window.parent && window.parent.document) {{
+                window.parent.document.title = "Speedy Cell ERP";
+            }}
+            document.title = "Speedy Cell ERP";
+        }} catch(e) {{}}
+    </script>
+    <style>
+        /* Carrega fonte Outfit do Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
-    /* Botões Globais do Sistema */
-    button[kind="primary"], .stButton > button, div[data-testid="stFormSubmitButton"] > button {
-        background: linear-gradient(135deg, #00AEEF 0%, #0077C8 100%) !important;
-        color: #FFFFFF !important;
-        border: none !important;
-        border-radius: 10px !important;
-        font-weight: 600 !important;
-        box-shadow: 0 4px 14px rgba(0, 174, 239, 0.35) !important;
-        transition: all 0.2s ease-in-out !important;
-    }
-    button[kind="primary"]:hover, .stButton > button:hover, div[data-testid="stFormSubmitButton"] > button:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 20px rgba(0, 174, 239, 0.55) !important;
-        background: linear-gradient(135deg, #00C2FF 0%, #0088E8 100%) !important;
-    }
+        /* Estilos Globais */
+        html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {{
+            font-family: 'Outfit', sans-serif !important;
+        }}
 
-    /* Badges de Status do Estoque / O.S. */
-    .badge {
-        padding: 6px 14px;
-        border-radius: 9999px;
-        font-size: 12px;
-        font-weight: 700;
-        display: inline-block;
-        text-align: center;
-    }
-    .badge-available { background-color: rgba(16, 185, 129, 0.12); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.2); }
-    .badge-sold { background-color: rgba(0, 174, 239, 0.12); color: #00AEEF; border: 1px solid rgba(0, 174, 239, 0.25); }
-    .badge-maintenance { background-color: rgba(245, 158, 11, 0.12); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.2); }
-    .badge-ready { background-color: rgba(0, 194, 255, 0.15); color: #0088CC; border: 1px solid rgba(0, 194, 255, 0.3); }
-    .badge-delivered { background-color: rgba(100, 116, 139, 0.12); color: #64748B; border: 1px solid rgba(100, 116, 139, 0.2); }
+        [data-testid="stAppViewContainer"] {{
+            background-color: {bg_app} !important;
+            color: {text_color} !important;
+            {'background-image: radial-gradient(circle at 50% 0%, #0a1b33 0%, #060D18 75%) !important;' if is_dark else ''}
+        }}
 
-    /* Estilo do Menu Sidebar */
-    .sidebar-header {
-        text-align: center;
-        padding: 15px 0;
-        border-bottom: 1px solid #E2E8F0;
-        margin-bottom: 20px;
-    }
-    .sidebar-title {
-        font-size: 22px;
-        font-weight: 800;
-        background: linear-gradient(135deg, #00AEEF 0%, #0077C8 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin: 0;
-        letter-spacing: -0.5px;
-    }
-    .sidebar-subtitle {
-        font-size: 12px;
-        color: #64748B;
-        font-weight: 500;
-        margin-top: 4px;
-    }
+        [data-testid="stSidebar"] {{
+            background-color: {bg_sidebar} !important;
+            border-right: 1px solid {border_color} !important;
+        }}
 
-    /* Logo na barra lateral */
-    [data-testid="stSidebar"] [data-testid="stImage"] img {
-        border-radius: 14px !important;
-        box-shadow: 0 4px 14px rgba(0, 174, 239, 0.15) !important;
-        border: 1px solid rgba(0, 174, 239, 0.25) !important;
-        background-color: #FFFFFF !important;
-    }
-</style>
-""", unsafe_allow_html=True)
+        /* Títulos e Headers */
+        h1, h2, h3, h4, h5, h6 {{
+            font-family: 'Outfit', sans-serif !important;
+            font-weight: 700 !important;
+            color: {text_color} !important;
+        }}
+
+        p, span, label, [data-testid="stWidgetLabel"] p {{
+            color: {text_color} !important;
+        }}
+
+        .stCaption, [data-testid="stCaptionContainer"] p {{
+            color: {subtext_color} !important;
+        }}
+
+        /* Cartão de Métrica Customizado */
+        .metric-card {{
+            background: {card_bg};
+            border-radius: 16px;
+            border: 1px solid {card_border};
+            box-shadow: {card_shadow};
+            padding: 24px;
+            transition: all 0.25s ease-in-out;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }}
+        .metric-card::before {{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00AEEF, #0077C8);
+            opacity: 0;
+            transition: opacity 0.25s ease-in-out;
+        }}
+        .metric-card:hover {{
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0, 174, 239, 0.35);
+            border-color: #00AEEF;
+        }}
+        .metric-card:hover::before {{
+            opacity: 1;
+        }}
+        .metric-title {{
+            font-size: 13px;
+            color: {subtext_color};
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }}
+        .metric-value {{
+            font-size: 32px;
+            color: {text_color};
+            font-weight: 800;
+            margin-top: 8px;
+        }}
+        
+        /* Cores de Métricas */
+        .val-primary {{ color: #00AEEF; font-weight: 800; }}
+        .val-success {{ color: #10B981; }}
+        .val-warning {{ color: #F59E0B; }}
+        .val-danger {{ color: #EF4444; }}
+
+        /* Botões Globais do Sistema */
+        button[kind="primary"], .stButton > button, div[data-testid="stFormSubmitButton"] > button {{
+            background: linear-gradient(135deg, #00AEEF 0%, #0077C8 100%) !important;
+            color: #FFFFFF !important;
+            border: none !important;
+            border-radius: 10px !important;
+            font-weight: 600 !important;
+            box-shadow: 0 4px 14px rgba(0, 174, 239, 0.35) !important;
+            transition: all 0.2s ease-in-out !important;
+        }}
+        button[kind="primary"]:hover, .stButton > button:hover, div[data-testid="stFormSubmitButton"] > button:hover {{
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(0, 174, 239, 0.55) !important;
+            background: linear-gradient(135deg, #00C2FF 0%, #0088E8 100%) !important;
+        }}
+
+        /* Inputs e Controles */
+        .stTextInput input, .stNumberInput input, .stTextArea textarea, .stSelectbox select {{
+            color: {text_color} !important;
+            background-color: {input_bg} !important;
+        }}
+        div[data-baseweb="base-input"], div[data-baseweb="input"], div[data-baseweb="select"] > div {{
+            background-color: {input_bg} !important;
+            border: 1px solid {input_border} !important;
+            border-radius: 10px !important;
+        }}
+
+        /* Badges de Status do Estoque / O.S. */
+        .badge {{
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-block;
+            text-align: center;
+        }}
+        .badge-available {{ background-color: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }}
+        .badge-sold {{ background-color: rgba(0, 174, 239, 0.15); color: #00AEEF; border: 1px solid rgba(0, 174, 239, 0.35); }}
+        .badge-maintenance {{ background-color: rgba(245, 158, 11, 0.15); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); }}
+        .badge-ready {{ background-color: rgba(0, 194, 255, 0.2); color: #00AEEF; border: 1px solid rgba(0, 194, 255, 0.4); }}
+        .badge-delivered {{ background-color: rgba(100, 116, 139, 0.15); color: {subtext_color}; border: 1px solid rgba(100, 116, 139, 0.3); }}
+
+        /* Estilo do Menu Sidebar */
+        .sidebar-header {{
+            text-align: center;
+            padding: 15px 0;
+            border-bottom: 1px solid {border_color};
+            margin-bottom: 20px;
+        }}
+        .sidebar-title {{
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00AEEF 0%, #0077C8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }}
+        .sidebar-subtitle {{
+            font-size: 12px;
+            color: {subtext_color};
+            font-weight: 500;
+            margin-top: 4px;
+        }}
+
+        /* Logo na barra lateral */
+        [data-testid="stSidebar"] [data-testid="stImage"] img {{
+            border-radius: 14px !important;
+            box-shadow: 0 4px 14px rgba(0, 174, 239, 0.15) !important;
+            border: 1px solid rgba(0, 174, 239, 0.25) !important;
+            background-color: #FFFFFF !important;
+        }}
+
+        /* Separadores e Caixas Expansíveis */
+        hr {{
+            border-color: {border_color} !important;
+        }}
+        [data-testid="stExpander"] {{
+            background-color: {card_bg} !important;
+            border: 1px solid {card_border} !important;
+            border-radius: 12px !important;
+        }}
+    </style>
+    """, unsafe_allow_html=True)
+
+injetar_estilos_tema()
 
 # =========================================================================
 # 3. CONTROLE DE SESSÃO E LOGIN
@@ -919,6 +978,13 @@ with st.sidebar:
 
     st.caption(f"Usuário: {st.session_state.user_name}")
     
+    # Alternar Tema Claro / Escuro
+    tema_atual = st.session_state.get("tema_sistema", "dark")
+    label_tema = "☀️ Modo Claro" if tema_atual == "dark" else "🌙 Modo Escuro"
+    if st.button(label_tema, use_container_width=True, key="btn_toggle_tema"):
+        st.session_state.tema_sistema = "light" if tema_atual == "dark" else "dark"
+        st.rerun()
+        
     # Botão para ocultar/mostrar valores financeiros
     label_olho = "👁️ Mostrar Valores" if st.session_state.ocultar_valores else "🙈 Ocultar Valores"
     if st.button(label_olho, use_container_width=True, key="btn_toggle_olho"):
@@ -1436,59 +1502,55 @@ elif opcao == "👤 Clientes (CRM)":
 elif opcao == "📦 Produtos & Estoque":
     st.title("📦 Controle de Estoque & Catálogo de Produtos")
     
-    if st.session_state.user_role == 'adm':
-        aba_inventario, aba_novo_prod = st.tabs(["🔍 Consultar Catálogo & Estoque", "➕ Adicionar Novo Produto ao Catálogo"])
-    else:
-        aba_inventario = st.container()
+    aba_inventario, aba_novo_prod = st.tabs(["🔍 Consultar Catálogo & Estoque", "➕ Adicionar Novo Produto ao Catálogo"])
         
-    if st.session_state.user_role == 'adm':
-        with aba_novo_prod:
-            st.header("Cadastrar Novo Modelo no Catálogo")
-            with st.form("form_novo_produto", clear_on_submit=True):
-                tipo_item = st.text_input(
-                    "Tipo do Produto / Categoria (Livre para digitar):",
-                    placeholder="Ex: Smartphone, Película, Capa, Fone, Carregador, Bateria, Cabo, etc."
-                )
-                marca = st.text_input("Marca (Ex: Apple, Samsung, Xiaomi, Motorola, JBL):", placeholder="Ex: Apple")
-                modelo = st.text_input("Modelo / Configuração / Descrição:", placeholder="Ex: iPhone 13 128GB, Capa Silicone, Película 3D...")
-                custo = st.number_input("Custo de Aquisição (R$):", min_value=0.0, step=10.0)
-                val_minimo = st.number_input("Valor Mínimo de Venda (R$):", min_value=0.0, step=10.0)
-                val_venda = st.number_input("Valor Comercial Sugerido (R$):", min_value=0.0, step=10.0)
-                quantidade = st.number_input("Quantidade Inicial de Entrada (Unidades Físicas):", min_value=0, step=1, value=1)
-                
-                if st.form_submit_button("Adicionar ao Catálogo e Gerar Lote", type="primary"):
-                    if marca and modelo:
-                        try:
-                            tipo_clean = tipo_item.strip()
-                            if tipo_clean:
-                                modelo_com_tipo = f"[{tipo_clean}] {modelo.strip()}"
-                            else:
-                                modelo_com_tipo = modelo.strip()
-                            
-                            conn = abrir_conexao()
-                            cursor = conn.cursor()
-                            cursor.execute("""
-                                INSERT INTO Produtos (Marca, Modelo, CustoProduto, ValorMinimo, ValorVenda)
-                                VALUES (%s, %s, %s, %s, %s) RETURNING IdProduto
-                            """, (marca.strip(), modelo_com_tipo, custo, val_minimo, val_venda))
-                            id_prod = cursor.fetchone()[0]
-                            
-                            # Inserindo unidades físicas iniciais
-                            for i in range(int(quantidade)):
-                                sn_gerado = f"REF-{id_prod}-{i+1}"
-                                cursor.execute("""
-                                    INSERT INTO ItensEstoque (IdProduto, NumeroSerie, Status) 
-                                    VALUES (%s, %s, 'Disponivel')
-                                """, (id_prod, sn_gerado))
-                                
-                            conn.commit()
-                            conn.close()
-                            st.success(f"Produto '{marca.strip()} - {modelo_com_tipo}' cadastrado e {quantidade} unidades adicionadas ao estoque!")
-                        except Exception as e:
-                            st.error(f"Erro ao salvar produto: {e}")
-                    else:
-                        st.warning("Marca e Modelo são obrigatórios.")
+    with aba_novo_prod:
+        st.header("Cadastrar Novo Modelo no Catálogo")
+        with st.form("form_novo_produto", clear_on_submit=True):
+            tipo_item = st.text_input(
+                "Tipo do Produto / Categoria (Livre para digitar):",
+                placeholder="Ex: Smartphone, Película, Capa, Fone, Carregador, Bateria, Cabo, etc."
+            )
+            marca = st.text_input("Marca (Ex: Apple, Samsung, Xiaomi, Motorola, JBL):", placeholder="Ex: Apple")
+            modelo = st.text_input("Modelo / Configuração / Descrição:", placeholder="Ex: iPhone 13 128GB, Capa Silicone, Película 3D...")
+            custo = st.number_input("Custo de Aquisição (R$):", min_value=0.0, step=10.0)
+            val_minimo = st.number_input("Valor Mínimo de Venda (R$):", min_value=0.0, step=10.0)
+            val_venda = st.number_input("Valor Comercial Sugerido (R$):", min_value=0.0, step=10.0)
+            quantidade = st.number_input("Quantidade Inicial de Entrada (Unidades Físicas):", min_value=0, step=1, value=1)
+            
+            if st.form_submit_button("Adicionar ao Catálogo e Gerar Lote", type="primary"):
+                if marca and modelo:
+                    try:
+                        tipo_clean = tipo_item.strip()
+                        if tipo_clean:
+                            modelo_com_tipo = f"[{tipo_clean}] {modelo.strip()}"
+                        else:
+                            modelo_com_tipo = modelo.strip()
                         
+                        conn = abrir_conexao()
+                        cursor = conn.cursor()
+                        cursor.execute("""
+                            INSERT INTO Produtos (Marca, Modelo, CustoProduto, ValorMinimo, ValorVenda)
+                            VALUES (%s, %s, %s, %s, %s) RETURNING IdProduto
+                        """, (marca.strip(), modelo_com_tipo, custo, val_minimo, val_venda))
+                        id_prod = cursor.fetchone()[0]
+                        
+                        # Inserindo unidades físicas iniciais
+                        for i in range(int(quantidade)):
+                            sn_gerado = f"REF-{id_prod}-{i+1}"
+                            cursor.execute("""
+                                INSERT INTO ItensEstoque (IdProduto, NumeroSerie, Status) 
+                                VALUES (%s, %s, 'Disponivel')
+                            """, (id_prod, sn_gerado))
+                            
+                        conn.commit()
+                        conn.close()
+                        st.success(f"Produto '{marca.strip()} - {modelo_com_tipo}' cadastrado e {quantidade} unidades adicionadas ao estoque!")
+                    except Exception as e:
+                        st.error(f"Erro ao salvar produto: {e}")
+                else:
+                    st.warning("Marca e Modelo são obrigatórios.")
+                    
     with aba_inventario:
         st.header("Catálogo Geral da Loja")
         termo_busca = st.text_input("Pesquisar por Marca ou Modelo de Produto:")
@@ -1532,175 +1594,156 @@ elif opcao == "📦 Produtos & Estoque":
                 prod = lista_select_produtos[prod_selecionado_str]
                 id_p, marca_p, modelo_p, custo_p, min_p, venda_p, disp_p, tot_p = prod
                 
-                if st.session_state.user_role == 'adm':
-                    # Layout colunas para dividir edição do produto e gerenciamento de unidades físicas
-                    col_edit, col_itens = st.columns([1, 1])
-                    
-                    with col_edit:
-                        st.markdown("#### ✏️ Editar Informações do Catálogo")
-                        with st.form(f"form_editar_prod_{id_p}"):
-                            nova_marca = st.text_input("Marca:", value=marca_p)
-                            novo_modelo = st.text_input("Modelo/Descrição:", value=modelo_p)
-                            novo_custo = st.number_input("Custo de Aquisição (R$):", value=float(custo_p), step=10.0)
-                            novo_min = st.number_input("Valor Mínimo (R$):", value=float(min_p), step=10.0)
-                            novo_venda = st.number_input("Valor Venda (R$):", value=float(venda_p), step=10.0)
-                            nova_qtd_disp = st.number_input("Quantidade Disponível em Estoque (Unidades):", value=int(disp_p), min_value=0, step=1, help="Altere para aumentar ou diminuir as unidades físicas disponíveis deste produto.")
-                            
-                            if st.form_submit_button("Salvar Alterações no Catálogo", type="primary"):
-                                try:
-                                    conn = abrir_conexao()
-                                    cursor = conn.cursor()
-                                    
-                                    # 1. Atualizar informações básicas do produto
-                                    cursor.execute("""
-                                        UPDATE Produtos
-                                        SET Marca = %s, Modelo = %s, CustoProduto = %s, ValorMinimo = %s, ValorVenda = %s
-                                        WHERE IdProduto = %s
-                                    """, (nova_marca, novo_modelo, novo_custo, novo_min, novo_venda, id_p))
-                                    
-                                    # 2. Ajustar quantidade física em estoque
-                                    qtd_atual = int(disp_p)
-                                    qtd_nova = int(nova_qtd_disp)
-                                    
-                                    if qtd_nova > qtd_atual:
-                                        # Adicionar novas unidades disponíveis
-                                        diff = qtd_nova - qtd_atual
-                                        for i in range(diff):
-                                            cursor.execute("SELECT COUNT(*) FROM ItensEstoque WHERE IdProduto = %s", (id_p,))
-                                            contagem = cursor.fetchone()[0]
-                                            sn_gerado = f"REF-{id_p}-{contagem + 1}"
-                                            cursor.execute("""
-                                                INSERT INTO ItensEstoque (IdProduto, NumeroSerie, Status) 
-                                                VALUES (%s, %s, 'Disponivel')
-                                            """, (id_p, sn_gerado))
-                                    elif qtd_nova < qtd_atual:
-                                        # Remover unidades disponíveis excedentes (começando pelas mais recentes)
-                                        diff = qtd_atual - qtd_nova
-                                        cursor.execute("""
-                                            SELECT IdItem FROM ItensEstoque 
-                                            WHERE IdProduto = %s AND LOWER(Status) = 'disponivel'
-                                            ORDER BY IdItem DESC LIMIT %s
-                                        """, (id_p, diff))
-                                        ids_deletar = [row[0] for row in cursor.fetchall()]
-                                        if ids_deletar:
-                                            cursor.execute("""
-                                                DELETE FROM ItensEstoque
-                                                WHERE IdItem = ANY(%s)
-                                            """, (ids_deletar,))
-                                            
-                                    conn.commit()
-                                    conn.close()
-                                    st.success("Catálogo e quantidade de estoque atualizados com sucesso!")
-                                    st.rerun()
-                                except Exception as e:
-                                    st.error(f"Erro ao salvar alterações: {e}")
-                                    
-                        st.write("---")
-                        st.markdown("#### 🗑️ Desativar Produto do Catálogo")
-                        confirmar_excluir_prod = st.checkbox(f"Confirmo que desejo ocultar/desativar o produto '{marca_p} - {modelo_p}' para novas vendas (preservando o histórico antigo no banco).", key=f"conf_del_prod_{id_p}")
-                        if st.button("Desativar Produto", type="primary", disabled=not confirmar_excluir_prod, key=f"btn_del_prod_{id_p}"):
+                # Layout colunas para dividir edição do produto e gerenciamento de unidades físicas
+                col_edit, col_itens = st.columns([1, 1])
+                
+                with col_edit:
+                    st.markdown("#### ✏️ Editar Informações do Catálogo")
+                    with st.form(f"form_editar_prod_{id_p}"):
+                        nova_marca = st.text_input("Marca:", value=marca_p)
+                        novo_modelo = st.text_input("Modelo/Descrição:", value=modelo_p)
+                        novo_custo = st.number_input("Custo de Aquisição (R$):", value=float(custo_p), step=10.0)
+                        novo_min = st.number_input("Valor Mínimo (R$):", value=float(min_p), step=10.0)
+                        novo_venda = st.number_input("Valor Venda (R$):", value=float(venda_p), step=10.0)
+                        nova_qtd_disp = st.number_input("Quantidade Disponível em Estoque (Unidades):", value=int(disp_p), min_value=0, step=1, help="Altere para aumentar ou diminuir as unidades físicas disponíveis deste produto.")
+                        
+                        if st.form_submit_button("Salvar Alterações no Catálogo", type="primary"):
                             try:
-                                # Seta Ativo = false para preservar as vendas e ordens de serviço passadas
-                                executar_query("UPDATE Produtos SET Ativo = false WHERE IdProduto = %s", (id_p,))
-                                st.success("Produto desativado e ocultado do catálogo com sucesso!")
-                                st.rerun()
-                            except Exception as e:
-                                st.error(f"Erro ao desativar produto: {e}")
+                                conn = abrir_conexao()
+                                cursor = conn.cursor()
                                 
-                    with col_itens:
-                        st.markdown("#### 📋 Unidades Físicas (Estoque Individual)")
-                        
-                        # Carrega as unidades desse produto específico
-                        itens_fisicos = executar_query("""
-                            SELECT IdItem, NumeroSerie, Status 
-                            FROM ItensEstoque 
-                            WHERE IdProduto = %s AND LOWER(Status) NOT IN ('orcamento', 'manutencao', 'pronto', 'recusado', 'entregue')
-                            ORDER BY IdItem ASC
-                        """, (id_p,), fetch='all')
-                        
-                        if itens_fisicos:
-                            df_itens = pd.DataFrame(itens_fisicos, columns=["ID Item", "Número de Série / REF", "Status"])
-                            st.dataframe(df_itens, use_container_width=True, hide_index=True)
-                            
-                            # Ações rápidas para alterar status ou remover uma unidade
-                            st.write("⚙️ **Modificar Unidade Física Específica**")
-                            lista_select_itens = {f"ID: {it[0]} - S/N: {it[1]} ({it[2]})": it for it in itens_fisicos}
-                            item_selecionado_str = st.selectbox("Selecione a unidade:", list(lista_select_itens.keys()))
-                            
-                            if item_selecionado_str:
-                                it = lista_select_itens[item_selecionado_str]
-                                id_item_it, sn_it, status_it = it
+                                # 1. Atualizar informações básicas do produto
+                                cursor.execute("""
+                                    UPDATE Produtos
+                                    SET Marca = %s, Modelo = %s, CustoProduto = %s, ValorMinimo = %s, ValorVenda = %s
+                                    WHERE IdProduto = %s
+                                """, (nova_marca, novo_modelo, novo_custo, novo_min, novo_venda, id_p))
                                 
-                                col_i1, col_i2 = st.columns(2)
-                                with col_i1:
-                                    novo_status_it = st.selectbox(
-                                        "Novo Status da Unidade:",
-                                        ["Disponivel", "Vendido", "Orcamento", "Manutencao", "Pronto", "Recusado", "Entregue"],
-                                        index=["Disponivel", "Vendido", "Orcamento", "Manutencao", "Pronto", "Recusado", "Entregue"].index(status_it)
-                                    )
-                                    if st.button("Atualizar Status", key=f"btn_status_item_{id_item_it}"):
-                                        try:
-                                            executar_query("UPDATE ItensEstoque SET Status = %s WHERE IdItem = %s", (novo_status_it, id_item_it))
-                                            st.success("Status atualizado!")
-                                            st.rerun()
-                                        except Exception as e:
-                                            st.error(e)
-                                with col_i2:
-                                    st.write("Ações")
-                                    if st.button("🗑️ Deletar Unidade", key=f"btn_del_item_{id_item_it}", type="primary"):
-                                        try:
-                                            executar_query("DELETE FROM ItensEstoque WHERE IdItem = %s", (id_item_it,))
-                                            st.success("Unidade removida!")
-                                            st.rerun()
-                                        except Exception as e:
-                                            st.error(f"Erro ao remover: {e}")
-                        else:
-                            st.warning("Nenhuma unidade física em estoque.")
-                            
-                        # Formulário para adicionar nova unidade física desse produto
-                        st.write("---")
-                        st.markdown("#### ➕ Adicionar Unidade Física Individual")
-                        with st.form(f"form_add_unidade_{id_p}", clear_on_submit=True):
-                            novo_sn_individual = st.text_input("Número de Série (ou deixe em branco para gerar auto):")
-                            if st.form_submit_button("Cadastrar Nova Unidade no Estoque"):
-                                try:
-                                    conn = abrir_conexao()
-                                    cursor = conn.cursor()
-                                    if not novo_sn_individual.strip():
+                                # 2. Ajustar quantidade física em estoque
+                                qtd_atual = int(disp_p)
+                                qtd_nova = int(nova_qtd_disp)
+                                
+                                if qtd_nova > qtd_atual:
+                                    # Adicionar novas unidades disponíveis
+                                    diff = qtd_nova - qtd_atual
+                                    for i in range(diff):
                                         cursor.execute("SELECT COUNT(*) FROM ItensEstoque WHERE IdProduto = %s", (id_p,))
                                         contagem = cursor.fetchone()[0]
-                                        sn_final_un = f"REF-{id_p}-{contagem + 1}"
-                                    else:
-                                        sn_final_un = novo_sn_individual
-                                        
+                                        sn_gerado = f"REF-{id_p}-{contagem + 1}"
+                                        cursor.execute("""
+                                            INSERT INTO ItensEstoque (IdProduto, NumeroSerie, Status) 
+                                            VALUES (%s, %s, 'Disponivel')
+                                        """, (id_p, sn_gerado))
+                                elif qtd_nova < qtd_atual:
+                                    # Remover unidades disponíveis excedentes (começando pelas mais recentes)
+                                    diff = qtd_atual - qtd_nova
                                     cursor.execute("""
-                                        INSERT INTO ItensEstoque (IdProduto, NumeroSerie, Status) 
-                                        VALUES (%s, %s, 'Disponivel')
-                                    """, (id_p, sn_final_un))
-                                    conn.commit()
-                                    conn.close()
-                                    st.success(f"Unidade '{sn_final_un}' adicionada com sucesso!")
-                                    st.rerun()
-                                except Exception as e:
-                                    st.error(f"Erro: {e}")
-                else:
-                    # Lojista vê apenas a listagem geral de unidades físicas
+                                        SELECT IdItem FROM ItensEstoque 
+                                        WHERE IdProduto = %s AND LOWER(Status) = 'disponivel'
+                                        ORDER BY IdItem DESC LIMIT %s
+                                    """, (id_p, diff))
+                                    ids_deletar = [row[0] for row in cursor.fetchall()]
+                                    if ids_deletar:
+                                        cursor.execute("""
+                                            DELETE FROM ItensEstoque
+                                            WHERE IdItem = ANY(%s)
+                                        """, (ids_deletar,))
+                                        
+                                conn.commit()
+                                conn.close()
+                                st.success("Catálogo e quantidade de estoque atualizados com sucesso!")
+                                st.rerun()
+                            except Exception as e:
+                                st.error(f"Erro ao salvar alterações: {e}")
+                                
+                    st.write("---")
+                    st.markdown("#### 🗑️ Desativar Produto do Catálogo")
+                    confirmar_excluir_prod = st.checkbox(f"Confirmo que desejo ocultar/desativar o produto '{marca_p} - {modelo_p}' para novas vendas (preservando o histórico antigo no banco).", key=f"conf_del_prod_{id_p}")
+                    if st.button("Desativar Produto", type="primary", disabled=not confirmar_excluir_prod, key=f"btn_del_prod_{id_p}"):
+                        try:
+                            # Seta Ativo = false para preservar as vendas e ordens de serviço passadas
+                            executar_query("UPDATE Produtos SET Ativo = false WHERE IdProduto = %s", (id_p,))
+                            st.success("Produto desativado e ocultado do catálogo com sucesso!")
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Erro ao desativar produto: {e}")
+                            
+                with col_itens:
                     st.markdown("#### 📋 Unidades Físicas (Estoque Individual)")
-                    try:
-                        itens_fisicos = executar_query("""
-                            SELECT IdItem, NumeroSerie, Status 
-                            FROM ItensEstoque 
-                            WHERE IdProduto = %s AND LOWER(Status) NOT IN ('orcamento', 'manutencao', 'pronto', 'recusado', 'entregue')
-                            ORDER BY IdItem ASC
-                        """, (id_p,), fetch='all')
+                    
+                    # Carrega as unidades desse produto específico
+                    itens_fisicos = executar_query("""
+                        SELECT IdItem, NumeroSerie, Status 
+                        FROM ItensEstoque 
+                        WHERE IdProduto = %s AND LOWER(Status) NOT IN ('orcamento', 'manutencao', 'pronto', 'recusado', 'entregue')
+                        ORDER BY IdItem ASC
+                    """, (id_p,), fetch='all')
+                    
+                    if itens_fisicos:
+                        df_itens = pd.DataFrame(itens_fisicos, columns=["ID Item", "Número de Série / REF", "Status"])
+                        st.dataframe(df_itens, use_container_width=True, hide_index=True)
                         
-                        if itens_fisicos:
-                            df_itens = pd.DataFrame(itens_fisicos, columns=["ID Item", "Número de Série / REF", "Status"])
-                            st.dataframe(df_itens, use_container_width=True, hide_index=True)
-                        else:
-                            st.warning("Nenhuma unidade física em estoque.")
-                    except Exception as e:
-                        st.error(f"Erro: {e}")
+                        # Ações rápidas para alterar status ou remover uma unidade
+                        st.write("⚙️ **Modificar Unidade Física Específica**")
+                        lista_select_itens = {f"ID: {it[0]} - S/N: {it[1]} ({it[2]})": it for it in itens_fisicos}
+                        item_selecionado_str = st.selectbox("Selecione a unidade:", list(lista_select_itens.keys()))
+                        
+                        if item_selecionado_str:
+                            it = lista_select_itens[item_selecionado_str]
+                            id_item_it, sn_it, status_it = it
+                            
+                            col_i1, col_i2 = st.columns(2)
+                            with col_i1:
+                                novo_status_it = st.selectbox(
+                                    "Novo Status da Unidade:",
+                                    ["Disponivel", "Vendido", "Orcamento", "Manutencao", "Pronto", "Recusado", "Entregue"],
+                                    index=["Disponivel", "Vendido", "Orcamento", "Manutencao", "Pronto", "Recusado", "Entregue"].index(status_it)
+                                )
+                                if st.button("Atualizar Status", key=f"btn_status_item_{id_item_it}"):
+                                    try:
+                                        executar_query("UPDATE ItensEstoque SET Status = %s WHERE IdItem = %s", (novo_status_it, id_item_it))
+                                        st.success("Status atualizado!")
+                                        st.rerun()
+                                    except Exception as e:
+                                        st.error(e)
+                            with col_i2:
+                                st.write("Ações")
+                                if st.button("🗑️ Deletar Unidade", key=f"btn_del_item_{id_item_it}", type="primary"):
+                                    try:
+                                        executar_query("DELETE FROM ItensEstoque WHERE IdItem = %s", (id_item_it,))
+                                        st.success("Unidade removida!")
+                                        st.rerun()
+                                    except Exception as e:
+                                        st.error(f"Erro ao remover: {e}")
+                    else:
+                        st.warning("Nenhuma unidade física em estoque.")
+                        
+                    # Formulário para adicionar nova unidade física desse produto
+                    st.write("---")
+                    st.markdown("#### ➕ Adicionar Unidade Física Individual")
+                    with st.form(f"form_add_unidade_{id_p}", clear_on_submit=True):
+                        novo_sn_individual = st.text_input("Número de Série (ou deixe em branco para gerar auto):")
+                        if st.form_submit_button("Cadastrar Nova Unidade no Estoque"):
+                            try:
+                                conn = abrir_conexao()
+                                cursor = conn.cursor()
+                                if not novo_sn_individual.strip():
+                                    cursor.execute("SELECT COUNT(*) FROM ItensEstoque WHERE IdProduto = %s", (id_p,))
+                                    contagem = cursor.fetchone()[0]
+                                    sn_final_un = f"REF-{id_p}-{contagem + 1}"
+                                else:
+                                    sn_final_un = novo_sn_individual
+                                    
+                                cursor.execute("""
+                                    INSERT INTO ItensEstoque (IdProduto, NumeroSerie, Status) 
+                                    VALUES (%s, %s, 'Disponivel')
+                                """, (id_p, sn_final_un))
+                                conn.commit()
+                                conn.close()
+                                st.success(f"Unidade '{sn_final_un}' adicionada com sucesso!")
+                                st.rerun()
+                            except Exception as e:
+                                st.error(f"Erro: {e}")
         else:
             st.info("Nenhum produto cadastrado no catálogo.")
 
