@@ -693,7 +693,7 @@ if not st.session_state.logged_in:
     # CSS customizado para fundo escuro e estilização premium da tela de login
     st.markdown("""
     <style>
-        /* Fundo escuro radial matching com o logo da Speedy Cell */
+        /* Fundo escuro radial matching com a Speedy Cell */
         [data-testid="stAppViewContainer"] {
             background-color: #050B14 !important;
             background-image: radial-gradient(circle at 30% 30%, #08243E 0%, #050B14 85%) !important;
@@ -705,90 +705,105 @@ if not st.session_state.logged_in:
         /* Ajusta o espaçamento do container principal */
         .block-container {
             padding-top: 4rem !important;
-            padding-bottom: 2rem !important;
+            padding-bottom: 3rem !important;
+            max-width: 1000px !important;
         }
         
-        /* Rótulos (Labels) */
-        label {
-            color: #94A3B8 !important;
+        /* Card moderno no formulário de login */
+        [data-testid="column"]:nth-of-type(2) [data-testid="stVerticalBlock"] > div:first-child {
+            background-color: rgba(10, 22, 38, 0.9) !important;
+            border: 1px solid rgba(0, 174, 239, 0.35) !important;
+            border-radius: 24px !important;
+            padding: 30px 25px !important;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 174, 239, 0.2) !important;
+            backdrop-filter: blur(16px) !important;
+        }
+        
+        /* Rótulos (Labels) bem visíveis em branco suave */
+        label, [data-testid="stWidgetLabel"] p {
+            color: #E2E8F0 !important;
             font-size: 14px !important;
-            font-weight: 500 !important;
+            font-weight: 600 !important;
+            margin-bottom: 4px !important;
         }
         
-        /* Inputs de texto escuros (Prevenção de fundo branco e letra branca invisível) */
+        /* Legendas e Dicas legíveis */
+        .stCaption, [data-testid="stCaptionContainer"] p {
+            color: #94A3B8 !important;
+            font-size: 13px !important;
+        }
+        
+        /* Inputs de texto escuros e nítidos */
         .stTextInput input {
             color: #FFFFFF !important;
             background-color: #0E1726 !important;
             border-radius: 10px !important;
             border: none !important;
+            font-size: 15px !important;
         }
         
-        /* Containers internos do baseweb do Streamlit */
+        /* Containers internos dos inputs */
         div[data-baseweb="base-input"], div[data-baseweb="input"] {
             background-color: #0E1726 !important;
-            border: 1px solid #162A45 !important;
+            border: 1px solid #1E2E48 !important;
             border-radius: 10px !important;
         }
         div[data-baseweb="input"]:focus-within {
             border-color: #00AEEF !important;
-            box-shadow: 0 0 0 2px rgba(0, 174, 239, 0.25) !important;
+            box-shadow: 0 0 0 2px rgba(0, 174, 239, 0.35) !important;
         }
         
-        /* Garantir texto legível nas opções de Radio Buttons */
-        .stRadio p, .stRadio label, .stRadio span {
-            color: #E2E8F0 !important;
-            font-size: 14px !important;
-        }
-        
-        /* Estilização para as Abas (Tabs) do Streamlit no tema escuro */
+        /* Abas (Tabs) com alto contraste - VISÍVEIS MESMO SEM O MOUSE */
         button[data-baseweb="tab"] {
             background-color: transparent !important;
             border: none !important;
+            padding: 10px 16px !important;
         }
-        button[data-baseweb="tab"] p {
-            color: #94A3B8 !important;
-            font-weight: 600 !important;
-        }
-        button[data-baseweb="tab"][aria-selected="true"] p {
-            color: #00C2FF !important;
+        button[data-baseweb="tab"] p, button[data-baseweb="tab"] span {
+            color: #E2E8F0 !important;
+            font-size: 16px !important;
             font-weight: 700 !important;
+        }
+        button[data-baseweb="tab"]:hover p, button[data-baseweb="tab"]:hover span {
+            color: #FFFFFF !important;
+        }
+        button[data-baseweb="tab"][aria-selected="true"] p, button[data-baseweb="tab"][aria-selected="true"] span {
+            color: #00C2FF !important;
+            font-weight: 800 !important;
         }
         div[data-baseweb="tab-highlight"] {
             background-color: #00AEEF !important;
+            height: 3px !important;
+            border-radius: 2px !important;
         }
         div[data-baseweb="tab-border"] {
             background-color: #162A45 !important;
         }
         
-        /* Card do formulário de login */
-        .login-card {
-            background-color: rgba(10, 22, 38, 0.85);
-            border: 1px solid rgba(0, 174, 239, 0.3);
-            border-radius: 20px;
-            padding: 35px;
-            box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 174, 239, 0.15);
-            backdrop-filter: blur(12px);
+        /* Radio Buttons */
+        .stRadio p, .stRadio label, .stRadio span {
+            color: #E2E8F0 !important;
+            font-size: 14px !important;
         }
 
         /* Estilização elegante da imagem do logo */
-        [data-testid="stImage"] img {
-            border-radius: 20px !important;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 174, 239, 0.3) !important;
+        [data-testid="column"]:nth-of-type(1) [data-testid="stImage"] img {
+            border-radius: 24px !important;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 25px rgba(0, 174, 239, 0.3) !important;
             border: 2px solid rgba(0, 174, 239, 0.4) !important;
             background-color: #FFFFFF !important;
         }
     </style>
     """, unsafe_allow_html=True)
 
-    # Layout em duas colunas: Esquerda (Logo completo), Direita (Formulário)
-    col_l1, col_l2 = st.columns([1.1, 0.9], gap="large")
+    # Layout em duas colunas alinhadas verticalmente
+    col_l1, col_l2 = st.columns([1, 1], gap="large", vertical_alignment="center")
     
     with col_l1:
         # Exibir logotipo da Speedy Cell
         st.image(LOGO_PATH, use_container_width=True)
         
     with col_l2:
-        st.markdown('<div class="login-card">', unsafe_allow_html=True)
         st.markdown("""
         <div style="text-align: center; margin-bottom: 20px;">
             <h2 style="background: linear-gradient(135deg, #00C2FF 0%, #0077C8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; font-family: 'Outfit'; font-size: 34px; font-weight: 800; letter-spacing: -0.5px;">Speedy Cell ERP</h2>
@@ -807,13 +822,13 @@ if not st.session_state.logged_in:
         
         with tab_login:
             if total_usuarios == 1:
-                st.caption("💡 *Dica:* Se este for seu primeiro acesso no banco local, use **adm** (senha: **admin**) ou cadastre sua conta na aba 'Criar Conta'.")
+                st.caption("💡 *Dica:* Use o usuário **adm** (senha: **admin**) ou cadastre sua conta na aba 'Criar Conta'.")
             
             with st.form("form_login", clear_on_submit=False):
                 user_input = st.text_input("Usuário:", key="login_usuario")
                 pass_input = st.text_input("Senha:", type="password", key="login_senha")
                 
-                st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
+                st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
                 submit_btn = st.form_submit_button("Acessar Sistema", type="primary", use_container_width=True)
                 
                 if submit_btn:
@@ -834,7 +849,7 @@ if not st.session_state.logged_in:
                     key="cad_role"
                 )
                 
-                st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
+                st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
                 submit_cad = st.form_submit_button("Finalizar Cadastro", type="primary", use_container_width=True)
                 if submit_cad:
                     if cad_nome and cad_usuario and cad_senha:
@@ -858,8 +873,7 @@ if not st.session_state.logged_in:
                             st.error(f"Erro ao cadastrar conta: {e}")
                     else:
                         st.warning("Preencha todos os campos obrigatórios para se cadastrar.")
-                    
-        st.markdown('</div>', unsafe_allow_html=True)
+                        
     st.stop()
 
 # =========================================================================
